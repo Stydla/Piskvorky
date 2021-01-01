@@ -40,7 +40,7 @@ namespace Piskvorky.WebApi
           resultJson = streamReader.ReadToEnd();
         }
 
-        MessageBox.Show(resultJson);
+        //MessageBox.Show(resultJson);
         throw new Exception(resultJson);
       }
       return resultJson;

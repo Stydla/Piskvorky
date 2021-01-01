@@ -5,23 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Piskvorky"
         xmlns:localUser="clr-namespace:Piskvorky.User" 
-        xmlns:fiveinarow="clr-namespace:Piskvorky.FiveInARow"
+        xmlns:fiveinarow="clr-namespace:Piskvorky.FiveInARow" xmlns:tests="clr-namespace:Piskvorky.Tests" xmlns:bulksolve="clr-namespace:Piskvorky.BulkSolve"
         mc:Ignorable="d"
-        Title="Martin nema sanci" Height="1000" Width="1400" Closing="Window_Closing">
+        Title="Martin nema sanci" Height="1100" Width="1400" Closing="Window_Closing">
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="250"></RowDefinition>
       <RowDefinition ></RowDefinition>
-      <RowDefinition Height="40"></RowDefinition>
+      <RowDefinition Height="30"></RowDefinition>
     </Grid.RowDefinitions>
 
     <localUser:UsersPanel></localUser:UsersPanel>
 
-    <fiveinarow:Desk x:Name="ucDesk" Grid.Row="1"></fiveinarow:Desk>
-    <Button Content="Play" HorizontalAlignment="Left" Margin="433,15,0,0" Grid.Row="2" VerticalAlignment="Top" RenderTransformOrigin="-0.808,-1.002" Click="Button_Click_2"/>
-    <TextBox x:Name="tbX" Text="8" HorizontalAlignment="Left" Margin="334,15,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="38"/>
-    <TextBox x:Name="tbY" Text="8"  HorizontalAlignment="Left" Margin="384,15,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="44"/>
-    <CheckBox Content="AI Mode" IsChecked="{Binding AutomaticMode}" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="2" VerticalAlignment="Center"/>
+    <TabControl Grid.Row="1">
+      <TabItem Header="API Game">
+        <fiveinarow:Desk x:Name="ucDesk"  DataContext="{Binding DeskData}"></fiveinarow:Desk>
+      </TabItem>
+      <TabItem Header="Test Game">
+        <tests:TestGameUI DataContext="{Binding TestGame}"></tests:TestGameUI>
+      </TabItem>
+      <TabItem Header="Bulk Solver">
+        <bulksolve:BulkSolveUI></bulksolve:BulkSolveUI>
+      </TabItem>
+    </TabControl>
 
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal">
+      <CheckBox Content="AI Mode" IsChecked="{Binding AutomaticMode}" HorizontalAlignment="Left" Margin="10,0,0,0" Width="100" Grid.Row="2" VerticalAlignment="Center"/>
+      <Button Content="AI Next" Width="100" Click="Button_Click_1"/>
+    </StackPanel>
+   
   </Grid>
 </Window>

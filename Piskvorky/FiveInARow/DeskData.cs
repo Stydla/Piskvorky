@@ -22,6 +22,46 @@ namespace Piskvorky.FiveInARow
     public List<PointData> CirclePoints { get; set; } = new List<PointData>();
     public List<PointData> CrossPoints { get; set; } = new List<PointData>();
 
+    public double SquareSize { get; set; } = 15;
+
+    public string Winner { get;  set; }
+
+    public ESymbol CurrentPlayerSymbol
+    {
+      get
+      {
+        if(IsMyTurn)
+        {
+          if(MySymbol == ESymbol.Circle)
+          {
+            return ESymbol.Circle;
+          } else
+          {
+            return ESymbol.Cross;
+          }
+        } else
+        {
+          if (MySymbol == ESymbol.Circle)
+          {
+            return ESymbol.Cross;
+          }
+          else
+          {
+            return ESymbol.Circle;
+          }
+        }
+      }
+    }
+
+    public DeskData Copy()
+    {
+      DeskData copy = (DeskData)this.MemberwiseClone();
+      copy.CirclePoints = new List<PointData>(this.CirclePoints);
+      copy.CrossPoints = new List<PointData>(this.CrossPoints);
+      return copy;
+    }
+    
+
     public DeskData() : this(-28, 28, -20, 20)
     {
     }
@@ -53,6 +93,11 @@ namespace Piskvorky.FiveInARow
       IsMyTurn = isMyTurn;
     }
 
+    internal void Clear()
+    {
+      CirclePoints.Clear();
+      CrossPoints.Clear();
+    }
   }
 
   public enum ESymbol

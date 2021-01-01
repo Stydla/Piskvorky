@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Piskvorky.User;
+using Piskvorky.WebApi;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,42 +23,36 @@ namespace Piskvorky.FiveInARow
   public partial class Desk : UserControl
   {
 
-    //private DeskData deskData;
-    private int squareSize = 15;
+    //private double squareSize = 15;
+
+    public event Action<int, int> EmptyPointClicked;
+    public event Action<int, int> FilledPointClicked;
 
     public Desk()
     {
       InitializeComponent();
     }
 
-    //public void Draw(DeskData dd)
-    //{
-    //  deskData = dd;
-    //  Draw();
-    //}
-
-    private void Draw()
+    public void Draw()
     {
       cnvDesk.Children.Clear();
-      if (DataContext is Data data)
-      {
-        DeskData deskData = data.DeskData;
-        if (deskData == null) return;
 
+      if(DataContext is DeskData deskData)
+      {
         DisplayInfo(deskData);
         SetSize(deskData);
         DrawGrid(deskData);
         DrawPoints(deskData);
-        //cnvDesk.RenderTransformOrigin = new Point(0.5, 0.5);
-        //cnvDesk.RenderTransform = new ScaleTransform(1, -1);
+        cnvDesk.RenderTransformOrigin = new Point(0.5, 0.5);
+        cnvDesk.RenderTransform = new ScaleTransform(1, -1);
       }
-    
     }
 
     private void DisplayInfo(DeskData deskData)
     {
       tbTurn.Text = deskData.IsMyTurn ? "My turn" : "Oponent's turn";
       tbMySymbol.Text = deskData.MySymbol == ESymbol.Circle ? "Circle" : "Cross";
+      tbWinner.Text = deskData.Winner;
     }
 
     private void SetSize(DeskData deskData)
@@ -64,8 +60,8 @@ namespace Piskvorky.FiveInARow
       int xColumns = deskData.EndIndexX - deskData.StartIndexX + 1;
       int yRows = deskData.EndIndexY - deskData.StartIndexY + 1;
 
-      cnvDesk.Width = xColumns * squareSize;
-      cnvDesk.Height = yRows * squareSize;
+      cnvDesk.Width = xColumns * deskData.SquareSize;
+      cnvDesk.Height = yRows * deskData.SquareSize;
   
     }
 
@@ -103,8 +99,8 @@ namespace Piskvorky.FiveInARow
 
     private void DrawPoints(DeskData deskData)
     {
-      int offset = 2;
-      int lineWidth = 2;
+      double offset = deskData.SquareSize / 7;
+      double lineWidth = deskData.SquareSize / 7;
       foreach(PointData p in deskData.CirclePoints)
       {
         DrawCircle(deskData, p, Brushes.Green, offset, lineWidth);
@@ -115,31 +111,31 @@ namespace Piskvorky.FiveInARow
       }
     }
 
-    private void DrawCircle(DeskData deskData, PointData p, Brush color, int offset, int lineWidth)
+    private void DrawCircle(DeskData deskData, PointData p, Brush color, double offset, double lineWidth)
     {
-      int totalSize = (deskData.EndIndexY - deskData.StartIndexY) * squareSize;
-      Ellipse elipse = new Ellipse() {  Width = squareSize - 2 * offset, Height = squareSize - 2 * offset };
+      double totalSize = (deskData.EndIndexY - deskData.StartIndexY) * deskData.SquareSize;
+      Ellipse elipse = new Ellipse() {  Width = deskData.SquareSize - 2 * offset, Height = deskData.SquareSize - 2 * offset };
       elipse.RenderTransform = new TranslateTransform(offset, offset);
-      Canvas.SetTop(elipse, totalSize - (p.Y +  (-deskData.StartIndexY)) * squareSize);
-      Canvas.SetLeft(elipse, (p.X + (-deskData.StartIndexX)) * squareSize);
+      Canvas.SetTop(elipse,  (p.Y +  (-deskData.StartIndexY)) * deskData.SquareSize);
+      Canvas.SetLeft(elipse, (p.X + (-deskData.StartIndexX)) * deskData.SquareSize);
       elipse.Stroke = color;
       elipse.StrokeThickness = lineWidth;
       cnvDesk.Children.Add(elipse);
     }
 
-    private void DrawCross(DeskData deskData,PointData p, Brush color, int offset, int lineWidth)
+    private void DrawCross(DeskData deskData,PointData p, Brush color, double offset, double lineWidth)
     {
-      int totalSize = (deskData.EndIndexY - deskData.StartIndexY) * squareSize;
-      Line line1 = new Line() { X1 = offset, X2 = squareSize - offset, Y1 = offset, Y2 = squareSize - offset };
-      Canvas.SetTop(line1, totalSize - (p.Y +  (-deskData.StartIndexY)) * squareSize);
-      Canvas.SetLeft(line1, (p.X + (-deskData.StartIndexX)) * squareSize);
+      double totalSize = (deskData.EndIndexY - deskData.StartIndexY) * deskData.SquareSize;
+      Line line1 = new Line() { X1 = offset, X2 = deskData.SquareSize - offset, Y1 = offset, Y2 = deskData.SquareSize - offset };
+      Canvas.SetTop(line1,  (p.Y +  (-deskData.StartIndexY)) * deskData.SquareSize);
+      Canvas.SetLeft(line1, (p.X + (-deskData.StartIndexX)) * deskData.SquareSize);
       line1.Stroke = color;
       line1.StrokeThickness = lineWidth;
       cnvDesk.Children.Add(line1);
 
-      Line line2 = new Line() { X1 = offset, X2 = squareSize - offset, Y2 = offset, Y1 = squareSize - offset };
-      Canvas.SetTop(line2, totalSize - (p.Y + (-deskData.StartIndexY)) * squareSize);
-      Canvas.SetLeft(line2, (p.X + (-deskData.StartIndexX)) * squareSize);
+      Line line2 = new Line() { X1 = offset, X2 = deskData.SquareSize - offset, Y2 = offset, Y1 = deskData.SquareSize - offset };
+      Canvas.SetTop(line2,  (p.Y + (-deskData.StartIndexY)) * deskData.SquareSize);
+      Canvas.SetLeft(line2, (p.X + (-deskData.StartIndexX)) * deskData.SquareSize);
       line2.Stroke = color;
       line2.StrokeThickness = lineWidth;
       cnvDesk.Children.Add(line2);
@@ -152,20 +148,45 @@ namespace Piskvorky.FiveInARow
 
     private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-      if(e.NewValue is Data data)
+      if(e.NewValue is DeskData deskData)
       {
-        data.PropertyChanged += Data_PropertyChanged;
+        Draw();
       }
-    }
-
-    private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-      Draw();
     }
 
     private void cnvDesk_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
-      
+      if (DataContext is DeskData data)
+      {
+        Point p = e.GetPosition(cnvDesk);
+        int x = (int)((int)(p.X / data.SquareSize) + data.StartIndexX);
+        int y = (int)((int)(p.Y / data.SquareSize) + data.StartIndexY);
+
+        if(!(data.CirclePoints.Any(pt=> pt.X == x && pt.Y == y) ||
+          data.CrossPoints.Any(pt => pt.X == x && pt.Y == y)))
+        {
+          EmptyPointClicked?.Invoke(x, y);
+        }
+
+        
+      }
+     
+    }
+
+    private void cnvDesk_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+      if (DataContext is DeskData data)
+      {
+        Point p = e.GetPosition(cnvDesk);
+        int x = (int)((int)(p.X / data.SquareSize) + data.StartIndexX);
+        int y = (int)((int)(p.Y / data.SquareSize) + data.StartIndexY);
+
+        if ((data.CirclePoints.Any(pt => pt.X == x && pt.Y == y) ||
+          data.CrossPoints.Any(pt => pt.X == x && pt.Y == y)))
+        {
+          FilledPointClicked?.Invoke(x, y);
+        }
+      }
     }
   }
 }

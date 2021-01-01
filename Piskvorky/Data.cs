@@ -1,4 +1,6 @@
-﻿using Piskvorky.FiveInARow;
+﻿using Piskvorky.BulkSolve;
+using Piskvorky.FiveInARow;
+using Piskvorky.Tests;
 using Piskvorky.User;
 using System;
 using System.Collections.Generic;
@@ -33,6 +35,13 @@ namespace Piskvorky
         OnPropertyChanged();
       }
     }
+
+    [XmlIgnore]
+    public TestGame TestGame { get; set; } = new TestGame();
+
+    [XmlIgnore]
+    public BulkSolveData BulkSolveData { get; set; } = new BulkSolveData();
+
     protected void OnPropertyChanged([CallerMemberName] string name = null)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

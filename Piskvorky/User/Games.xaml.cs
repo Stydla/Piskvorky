@@ -33,7 +33,7 @@ namespace Piskvorky.User
 
       Timer timer = new Timer();
       timer.Elapsed += Timer_Elapsed;
-      timer.Interval = 1000;
+      timer.Interval = 500;
       timer.Start();
 
     }
@@ -44,10 +44,6 @@ namespace Piskvorky.User
       
     }
 
-    private void btnShowGame_Click(object sender, RoutedEventArgs e)
-    {
-    
-    }
 
     private void ShowSelectedGame()
     {

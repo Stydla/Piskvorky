@@ -10,9 +10,9 @@
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition ></RowDefinition>
-      <RowDefinition Height="40"></RowDefinition>
+      <RowDefinition Height="50"></RowDefinition>
     </Grid.RowDefinitions>
-    <Canvas x:Name="cnvDesk" Grid.Row="0" Background="AliceBlue" SizeChanged="cnvDesk_SizeChanged" MouseLeftButtonUp="cnvDesk_MouseLeftButtonUp"></Canvas>
+    <Canvas x:Name="cnvDesk" Grid.Row="0" Background="AliceBlue" SizeChanged="cnvDesk_SizeChanged" MouseLeftButtonUp="cnvDesk_MouseLeftButtonUp" MouseRightButtonDown="cnvDesk_MouseRightButtonDown"></Canvas>
 
     <Grid Grid.Row="1">
       <Grid.ColumnDefinitions>
@@ -22,11 +22,16 @@
       <Grid.RowDefinitions>
         <RowDefinition></RowDefinition>
         <RowDefinition></RowDefinition>
+        <RowDefinition></RowDefinition>
       </Grid.RowDefinitions>
+
       <TextBlock Grid.Row="0" Grid.Column="0" Text="Current Player: " HorizontalAlignment="Right"></TextBlock>
       <TextBlock Grid.Row="0" Grid.Column="1" x:Name="tbTurn"/>
       <TextBlock Grid.Row="1" Grid.Column="0" Text="My Symbol: " HorizontalAlignment="Right"/>
       <TextBlock Grid.Row="1" Grid.Column="1" x:Name="tbMySymbol"></TextBlock>
+      <TextBlock Grid.Row="2" Grid.Column="0" Text="Winner: " HorizontalAlignment="Right"/>
+      <TextBlock Grid.Row="2" Grid.Column="1" x:Name="tbWinner"></TextBlock>
+      
     </Grid>
 
   </Grid>

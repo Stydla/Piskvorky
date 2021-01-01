@@ -1,4 +1,5 @@
-﻿using Piskvorky.FiveInARow;
+﻿using Piskvorky.AI;
+using Piskvorky.FiveInARow;
 using Piskvorky.User;
 using Piskvorky.WebApi;
 using System;
@@ -30,7 +31,40 @@ namespace Piskvorky
       InitializeComponent();
 
       Data data = Data.Load();
-      DataContext = data;      
+      DataContext = data;
+
+      ucDesk.EmptyPointClicked += UcDesk_PointClicked;
+
+    }
+
+
+    private void UcDesk_PointClicked(int x, int y)
+    {
+      if (DataContext is Data data)
+      {
+        try
+        {
+          if (data.AutomaticMode) return;
+
+
+          UserDV user = data.UsersPanelDV.UserListDV.SelectedUser;
+          GameDV game = user.SelectedGame;
+
+
+          JsonPlayRequest request = new JsonPlayRequest();
+          request.gameToken = game.GameToken;
+          request.userToken = user.Token;
+          request.positionX = x;
+          request.positionY = y;
+
+          JsonCommunication.Play(request);
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.ToString());
+        }
+
+      }
     }
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -41,40 +75,27 @@ namespace Piskvorky
       }
     }
 
-
-    private void Button_Click_2(object sender, RoutedEventArgs e)
+    private void Button_Click_1(object sender, RoutedEventArgs e)
     {
-      try
+      if (DataContext is Data data)
       {
-        if (DataContext is Data data)
+        try
         {
-          UserListDV ul = data.UsersPanelDV.UserListDV;
-          if (ul.SelectedUser != null)
-          {
-            if (ul.SelectedUser.Games.Count > 0)
-            {
-              UserDV selectedUser = ul.SelectedUser;
-              GameDV game = ul.SelectedUser.SelectedGame;
 
-              JsonPlayRequest playRequest = new JsonPlayRequest();
-              playRequest.gameToken = game.GameToken;
-              playRequest.userToken = selectedUser.Token;
-              playRequest.positionX = int.Parse(tbX.Text);
-              playRequest.positionY = int.Parse(tbY.Text);
+          UserDV user = data.UsersPanelDV.UserListDV.SelectedUser;
+          GameDV game = user.SelectedGame;
 
-              JsonPlayResponse response = JsonCommunication.Play(playRequest);
+          AIEngine.StartAIEngine(game, user, data.DeskData);
 
-              //MessageBox.Show($"{response.GetJsonString()}");
-
-            }
-          }
         }
-      }
-      catch(Exception ex)
-      {
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.ToString());
+        }
 
       }
     }
+
 
   }
 }
