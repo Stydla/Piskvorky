@@ -158,8 +158,11 @@ namespace Piskvorky.BulkSolve
       }
     }
 
+    private bool stop = false;
+
     private void Run_Click(object sender, RoutedEventArgs e)
     {
+      stop = false;
       Timer timer2 = new Timer();
       timer2.Elapsed += Timer2_Elapsed;
       timer2.Interval = 1000;
@@ -195,11 +198,15 @@ namespace Piskvorky.BulkSolve
             }
           }
 
-          while (data.BulkSolveData.Data.Count < 16)
+          if(!stop)
           {
-            BulkSolveDataItem bsdi = CreateGame();
-            data.BulkSolveData.Data.Add(bsdi);
+            while (data.BulkSolveData.Data.Count < 24)
+            {
+              BulkSolveDataItem bsdi = CreateGame();
+              data.BulkSolveData.Data.Add(bsdi);
+            }
           }
+          
 
           foreach (var item in data.BulkSolveData.Data)
           {
@@ -277,6 +284,16 @@ namespace Piskvorky.BulkSolve
     private void Timer2_Elapsed(object sender, ElapsedEventArgs e)
     {
       Dispatcher.Invoke(new Action(() => Play()));
+    }
+
+    private void Stop_Click(object sender, RoutedEventArgs e)
+    {
+      Dispatcher.Invoke(new Action(() => Stop()));
+    }
+
+    private void Stop()
+    {
+      stop = true;
     }
   }
 }

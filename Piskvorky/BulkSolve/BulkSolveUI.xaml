@@ -16,6 +16,7 @@
       <Button x:Name="CreateGames" Content="Create Games" Click="CreateGames_Click"></Button>
       <Button x:Name="Solve" Content="Solve Games"  Click="Button_Click"></Button>
       <Button x:Name="Run" Content="Run" Click="Run_Click"/>
+      <Button x:Name="StopX" Content="Stop" Click="Stop_Click"/>
     </StackPanel>
 
     <ListView  Grid.Row="1" ItemsSource="{Binding BulkSolveData.Data}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
